@@ -9,7 +9,7 @@ import keyboard
 
 from v1_1 import grabScreen
 results = {}
-#窩不知道
+#04000000000000000000000000
 mot_tracker = Sort()
 
 # load models

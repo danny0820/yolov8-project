@@ -49,12 +49,14 @@ while ouo:
         _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 64, 255, cv2.THRESH_BINARY_INV)
    
         # license_plate_text= read_license_plate(license_plate_crop_thresh) # 用老外的
-        license_plate_text=pytesseract.image_to_string(license_plate_crop_thresh) #用google Ocr的方法
-        #step: https://github.com/UB-Mannheim/tesseract/wiki 下載完後就變成上面的資料夾GoogleOcr
-        #step: 到環境變數去設定Path到GoogleOcr的資料夾去 e.g.D:\Programs\L_Pycharm\yoloV8\Co-danny-yolov8\GoogleOcr
-        #step: 而外開啟cmd(不要vscode)打上tesseract -v 看看有沒有出現5個found
-        #step: 以上都完成後直接在cmd裡面執行main.py //vsCode的cmd沒成功過(可能我沒重開vsC)
-        ##########  錯誤率也很高，googleOcr要在非常清楚的樣子才好判斷 像是ouo.png  ############
+        license_plate_text=pytesseract.image_to_string(license_plate_crop_thresh) #用google Ocr的方法  //不會用到Util.py 
+        """
+            https://github.com/UB-Mannheim/tesseract/wiki 下載後到你下載的地方 複製路徑
+            到"環境變數"去設定Path 貼上剛剛複製的路徑資料夾     //e.g.D:\Programs\L_Pycharm\yoloV8\Co-danny-yolov8\GoogleOcr
+            另外開啟cmd(不要vsCode)打上>> tesseract -v 看看有沒有出現5個found
+            以上都完成後直接在cmd裡面執行 python main.py       //vsCode的cmd沒成功過(可能我沒重開vsC)
+            ~~~錯誤率也很高，googleOcr要在非常清楚乾淨沒髒汙的樣子才好判斷~~~
+        """
         print(license_plate_text)
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.submit(addText,license_plate_text,x1,y1)

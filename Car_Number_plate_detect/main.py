@@ -6,7 +6,7 @@ import util
 from sort.sort import *
 from util import get_car, read_license_plate, write_csv
 import keyboard
-import pytesseract
+import pytesseract # pip install pytesseract
 from v1_1 import grabScreen
 
 mot_tracker = Sort()

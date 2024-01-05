@@ -2,7 +2,7 @@ import string
 import easyocr
 
 # Initialize the OCR reader
-reader = easyocr.Reader(['en'], gpu=False)
+reader = easyocr.Reader(['en'], gpu=True)
 
 # Mapping dictionaries for character conversion
 dict_char_to_int = {'O': '0',
@@ -10,7 +10,8 @@ dict_char_to_int = {'O': '0',
                     'J': '3',
                     'A': '4',
                     'G': '6',
-                    'S': '5'}
+                    'S': '5'
+                    }
 
 dict_int_to_char = {'0': 'O',
                     '1': 'I',
@@ -18,7 +19,7 @@ dict_int_to_char = {'0': 'O',
                     '4': 'A',
                     '6': 'G',
                     '5': 'S'}
-
+O_to_nine=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] 
 
 def write_csv(results, output_path):
     """
@@ -68,8 +69,13 @@ def license_complies_format(text):
     Returns:
         bool: True if the license plate complies with the format, False otherwise.
     """
-    if len(text) < 4:
-        return False
+    if len(text) >=5 and len(text)<=7:
+        for i in text:
+            if i not in string.ascii_uppercase and i  not in O_to_nine:
+                # print("Format False!!!!!")
+                return False
+        # print("Format true")
+        return True
 
     # if (text[0] in string.ascii_uppercase or text[0] in dict_int_to_char.keys()) and \
     #    (text[1] in string.ascii_uppercase or text[1] in dict_int_to_char.keys()) and \
@@ -79,8 +85,8 @@ def license_complies_format(text):
     #    (text[5] in string.ascii_uppercase or text[5] in dict_int_to_char.keys()) and \
     #    (text[6] in string.ascii_uppercase or text[6] in dict_int_to_char.keys()):
     #     return True
-    else:
-        return True
+    
+    return False
 
 
 def format_license(text):
@@ -94,17 +100,19 @@ def format_license(text):
         str: Formatted license plate text.
     """
     license_plate_ = ''
-    mapping = {0: dict_int_to_char, 1: dict_int_to_char, 4: dict_int_to_char, 5: dict_int_to_char, 6: dict_int_to_char,
-               2: dict_char_to_int, 3: dict_char_to_int}
-    for j in [0, 1, 2, 3, 4, 5, 6]:
-        if text[j] in mapping[j].keys():
-            license_plate_ += mapping[j][text[j]]
+    # mapping = {0: dict_int_to_char, 1: dict_int_to_char, 4: dict_int_to_char, 5: dict_int_to_char, 6: dict_int_to_char,
+    #            2: dict_char_to_int, 3: dict_char_to_int}
+    for j in range(len(text)):
+        if text[j] =='o' or text[j] == "O":
+            license_plate_ += '0'
+        elif text[j] == "I":
+            license_plate_ += '1'
         else:
             license_plate_ += text[j]
 
     # for i in text:
     #     license_plate_+= i
-
+    # print("license_plate_:",license_plate_)
     return license_plate_
 
 
@@ -120,17 +128,17 @@ def read_license_plate(license_plate_crop):
     """
 
     detections = reader.readtext(license_plate_crop)
-
+    # print(detections)
     for detection in detections:
         bbox, text, score = detection
-
+        if score<0.6:
+            continue
         text = text.upper().replace(' ', '')
-
         if license_complies_format(text):
-            # return format_license(text), score
-            return text
-
-    return None, None
+            # print(text)
+            return format_license(text)
+            
+    return None
 
 
 def get_car(license_plate, vehicle_track_ids):

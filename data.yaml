@@ -1,4 +1,4 @@
-path: C:/Users/Danny/Documents/GitHub/yolov8-segmentation
+path: C:/Users/Danny/Documents/GitHub/yolov8-project
 
 train: ./train/images
 val: ./valid/images
